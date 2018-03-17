@@ -4,8 +4,9 @@ import 'dart:math';
 class CorrectWrongOverlay extends StatefulWidget {
 
   final bool _isCorrect;
+  final VoidCallback _onTap;
 
-  CorrectWrongOverlay(this._isCorrect);
+  CorrectWrongOverlay(this._isCorrect, this._onTap);
 
   @override
   State createState() => new CorrectWrongOverlayState();
@@ -29,13 +30,19 @@ class CorrectWrongOverlayState extends State<CorrectWrongOverlay> with SingleTic
     _iconAnimation.addListener(() => this.setState(() {}));
     _iconAnimationController.forward();
   }
+
+  @override
+  void dispose() {
+    _iconAnimationController.dispose();
+    super.dispose();
+  }
   
   @override
   Widget build(BuildContext context) {
       return new Material(
         color: Colors.black54,
         child: new InkWell(
-          onTap: () => print("type overlat"),
+          onTap: () => widget._onTap(),
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -48,7 +55,7 @@ class CorrectWrongOverlayState extends State<CorrectWrongOverlay> with SingleTic
                   angle: _iconAnimation.value * 2 * PI,
                   child: new Icon(
                             widget._isCorrect == true ? Icons.done : Icons.clear, 
-                            size: 80.0
+                            size: _iconAnimation.value * 80.0
                           ),
                 ),
               ),
